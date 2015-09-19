@@ -1,7 +1,10 @@
 package com.gaoxin.toy4j.framework.helper;
 
+import com.gaoxin.toy4j.framework.annotation.Controller;
+import com.gaoxin.toy4j.framework.annotation.Service;
 import com.gaoxin.toy4j.framework.utils.ClassUtil;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -30,8 +33,13 @@ public class ClassHelper {
      * @return
      */
     public static Set<Class<?>> getServiceClassSet() {
-        // TODO: 15-9-16
-        return null;
+        Set<Class<?>> classSet = new HashSet<Class<?>>();
+        for (Class<?> cls : CLASS_SET) {
+            if (cls.isAnnotationPresent(Service.class)) {
+                classSet.add(cls);
+            }
+        }
+        return classSet;
     }
 
     /**
@@ -39,8 +47,13 @@ public class ClassHelper {
      * @return
      */
     public static Set<Class<?>> getControllerClassSet() {
-        // TODO: 15-9-16
-        return null;
+        Set<Class<?>> classSet = new HashSet<Class<?>>();
+        for (Class<?> cls : CLASS_SET) {
+            if (cls.isAnnotationPresent(Controller.class)) {
+                classSet.add(cls);
+            }
+        }
+        return classSet;
     }
 
     /**
@@ -48,7 +61,9 @@ public class ClassHelper {
      * @return
      */
     public static Set<Class<?>> getBeanClassSet() {
-        // TODO: 15-9-16
-        return null;
+        Set<Class<?>> classSet = new HashSet<Class<?>>();
+        classSet.addAll(getServiceClassSet());
+        classSet.addAll(getControllerClassSet());
+        return classSet;
     }
 }
