@@ -13,4 +13,14 @@ public class ConfigHelper {
         // TODO: 15-9-16
         return "";
     }
+
+    public static String getAppJspPath() {
+        // todo
+        return "";
+    }
+
+    public static String getAppAssetPath() {
+        // todo
+        return "";
+    }
 }
