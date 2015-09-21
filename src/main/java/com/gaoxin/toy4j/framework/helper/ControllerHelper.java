@@ -26,12 +26,12 @@ public final class ControllerHelper {
                     if (method.isAnnotationPresent(Action.class)) {
                         Action action = method.getAnnotation(Action.class);
                         String mapping = action.value();
-                        if (mapping.matches("\\w+:/\\w*")) {
+//                        if (mapping.matches("\\w+:/\\w*")) {
                             String[] array = mapping.split(":");
                             Request request = new Request(array[0], array[1]);
                             Handler handler = new Handler(controllerClass, method);
                             ACTION_MAP.put(request, handler);
-                        }
+//                        }
                     }
                 }
 

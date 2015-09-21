@@ -24,15 +24,12 @@ public class View {
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
-
     public Map<String, Object> getModel() {
         return model;
     }
 
-    public void setModel(Map<String, Object> model) {
-        this.model = model;
+    public View addModel(String key, Object value) {
+        model.put(key, value);
+        return this;
     }
 }
