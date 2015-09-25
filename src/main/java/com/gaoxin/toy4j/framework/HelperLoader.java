@@ -1,9 +1,6 @@
 package com.gaoxin.toy4j.framework;
 
-import com.gaoxin.toy4j.framework.helper.BeanHelper;
-import com.gaoxin.toy4j.framework.helper.ClassHelper;
-import com.gaoxin.toy4j.framework.helper.ControllerHelper;
-import com.gaoxin.toy4j.framework.helper.IocHelper;
+import com.gaoxin.toy4j.framework.helper.*;
 import com.gaoxin.toy4j.framework.utils.ClassUtil;
 
 /**
@@ -15,6 +12,7 @@ public final class HelperLoader {
         Class<?>[] classList = {
             ClassHelper.class,
             BeanHelper.class,
+            AopHelper.class,
             IocHelper.class,
             ControllerHelper.class
         };

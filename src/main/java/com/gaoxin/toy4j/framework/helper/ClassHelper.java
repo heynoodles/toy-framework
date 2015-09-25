@@ -4,6 +4,7 @@ import com.gaoxin.toy4j.framework.annotation.Controller;
 import com.gaoxin.toy4j.framework.annotation.Service;
 import com.gaoxin.toy4j.framework.utils.ClassUtil;
 
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,5 +66,25 @@ public class ClassHelper {
         classSet.addAll(getServiceClassSet());
         classSet.addAll(getControllerClassSet());
         return classSet;
+    }
+
+    public static Set<Class<?>> getClassSetByAnnotation(Class<? extends Annotation> annotation) {
+        Set<Class<?>> result = new HashSet<Class<?>>();
+        for (Class<?> aClass : CLASS_SET) {
+            if (aClass.isAnnotationPresent(annotation)) {
+                result.add(aClass);
+            }
+        }
+        return result;
+    }
+
+    public static Set<Class<?>> getClassSetBySuper(Class<?> superClass) {
+        Set<Class<?>> result = new HashSet<Class<?>>();
+        for (Class<?> aClass : CLASS_SET) {
+            if (superClass.isAssignableFrom(aClass) && !superClass.equals(aClass)) {
+                result.add(aClass);
+            }
+        }
+        return result;
     }
 }
