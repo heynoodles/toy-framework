@@ -1,9 +1,11 @@
 package com.gaoxin.toy4j.framework.helper;
 
 import com.gaoxin.toy4j.framework.annotation.Aspect;
+import com.gaoxin.toy4j.framework.annotation.Service;
 import com.gaoxin.toy4j.framework.proxy.AspectProxy;
 import com.gaoxin.toy4j.framework.proxy.Proxy;
 import com.gaoxin.toy4j.framework.proxy.ProxyManager;
+import com.gaoxin.toy4j.framework.proxy.TransactionProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +58,17 @@ public class AopHelper {
 
     private static Map<Class<?>, Set<Class<?>>> createProxyMap() {
         Map<Class<?>, Set<Class<?>>> result = new HashMap<Class<?>, Set<Class<?>>>();
+        addAspectClassSet(result);
+        addTransactionClassSet(result);
+        return result;
+    }
+
+    private static void addTransactionClassSet(Map<Class<?>, Set<Class<?>>> proxyMap) {
+        Set<Class<?>> proxySet = ClassHelper.getClassSetByAnnotation(Service.class);
+        proxyMap.put(TransactionProxy.class, proxySet);
+    }
+
+    private static void addAspectClassSet(Map<Class<?>, Set<Class<?>>> proxyMap) {
         Set<Class<?>> proxySet = ClassHelper.getClassSetBySuper(AspectProxy.class);
 
         for (Class<?> aClass : proxySet) {
@@ -66,10 +79,9 @@ public class AopHelper {
                 if (annotation != null && !annotation.equals(Aspect.class)) {
                     targetSet = ClassHelper.getClassSetByAnnotation(annotation);
                 }
-                result.put(aClass, targetSet);
+                proxyMap.put(aClass, targetSet);
             }
         }
-        return result;
     }
 
 }

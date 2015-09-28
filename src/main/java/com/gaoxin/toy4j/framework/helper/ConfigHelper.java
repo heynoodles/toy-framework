@@ -27,4 +27,20 @@ public class ConfigHelper {
     public static String getAppAssetPath() {
         return PropsUtil.getString(CONFIG_PROPS, ConfigConstant.APP_ASSERT_PATH, "/assert/");
     }
+
+    public static String getJdbcDriver() {
+        return PropsUtil.getString(CONFIG_PROPS, ConfigConstant.JDBC_DRIVER);
+    }
+
+    public static String getJdbcUrl() {
+        return PropsUtil.getString(CONFIG_PROPS, ConfigConstant.JDBC_URL);
+    }
+
+    public static String getJdbcUserName() {
+        return PropsUtil.getString(CONFIG_PROPS, ConfigConstant.JDBC_USERNAME);
+    }
+
+    public static String getJdbcPassword() {
+        return PropsUtil.getString(CONFIG_PROPS, ConfigConstant.JDBC_PASSWORD);
+    }
 }
