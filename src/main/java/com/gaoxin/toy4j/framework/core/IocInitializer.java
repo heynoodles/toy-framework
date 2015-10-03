@@ -1,4 +1,4 @@
-package com.gaoxin.toy4j.framework.helper;
+package com.gaoxin.toy4j.framework.core;
 
 import com.gaoxin.toy4j.framework.annotation.Inject;
 import com.gaoxin.toy4j.framework.utils.ReflectionUtil;
@@ -10,10 +10,15 @@ import java.util.Map;
 /**
  * @author gaoxin.wei
  */
-public final class IocHelper {
+public class IocInitializer implements Initialize {
 
-    static {
-        Map<Class<?>, Object> beanMap = BeanHelper.getBeanMap();
+    private IocInitializer() {}
+
+    public static IocInitializer INSTANCE = new IocInitializer();
+
+    @Override
+    public void init() {
+        Map<Class<?>, Object> beanMap = BeanHolder.INSTANCE.getBeanMap();
         if (beanMap != null && !beanMap.isEmpty()) {
             for (Map.Entry<Class<?>, Object> beanEntry : beanMap.entrySet()) {
                 Class<?> beanClass = beanEntry.getKey();
@@ -32,5 +37,6 @@ public final class IocHelper {
                 }
             }
         }
+
     }
 }

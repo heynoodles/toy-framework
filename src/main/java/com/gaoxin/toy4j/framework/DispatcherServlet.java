@@ -5,9 +5,9 @@ import com.gaoxin.toy4j.framework.bean.Data;
 import com.gaoxin.toy4j.framework.bean.Handler;
 import com.gaoxin.toy4j.framework.bean.Param;
 import com.gaoxin.toy4j.framework.bean.View;
-import com.gaoxin.toy4j.framework.helper.BeanHelper;
+import com.gaoxin.toy4j.framework.core.BeanHolder;
+import com.gaoxin.toy4j.framework.core.ControllerHolder;
 import com.gaoxin.toy4j.framework.helper.ConfigHelper;
-import com.gaoxin.toy4j.framework.helper.ControllerHelper;
 import com.gaoxin.toy4j.framework.utils.CodecUtil;
 import com.gaoxin.toy4j.framework.utils.ReflectionUtil;
 import com.gaoxin.toy4j.framework.utils.StreamUtil;
@@ -37,7 +37,7 @@ public class DispatcherServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        HelperLoader.init();
+        BootstrapLoader.init();
         ServletContext servletContext = config.getServletContext();
 
         ServletRegistration jspServlet = servletContext.getServletRegistration("jsp");
@@ -52,7 +52,7 @@ public class DispatcherServlet extends HttpServlet {
         // 1. 根据请求获取对应的handler
         String requestMethod = req.getMethod().toLowerCase();
         String requestPath = req.getPathInfo();
-        Handler handler = ControllerHelper.getHandler(requestMethod, requestPath);
+        Handler handler = ControllerHolder.INSTANCE.getHandler(requestMethod, requestPath);
         if (handler == null) return;
 
         // 2. 拼凑出对应的入参param
@@ -82,7 +82,7 @@ public class DispatcherServlet extends HttpServlet {
 
         // 3. 反射调用action
         Class<?> controllerClass = handler.getControllerClass();
-        Object controllerBean = BeanHelper.getBean(controllerClass);
+        Object controllerBean = BeanHolder.INSTANCE.getBean(controllerClass);
         Method actionMethod = handler.getMethod();
         Object result = ReflectionUtil.invokeMethod(controllerBean, actionMethod, param);
 

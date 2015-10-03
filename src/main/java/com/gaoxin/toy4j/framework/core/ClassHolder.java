@@ -1,7 +1,8 @@
-package com.gaoxin.toy4j.framework.helper;
+package com.gaoxin.toy4j.framework.core;
 
 import com.gaoxin.toy4j.framework.annotation.Controller;
 import com.gaoxin.toy4j.framework.annotation.Service;
+import com.gaoxin.toy4j.framework.helper.ConfigHelper;
 import com.gaoxin.toy4j.framework.utils.ClassUtil;
 
 import java.lang.annotation.Annotation;
@@ -11,12 +12,17 @@ import java.util.Set;
 /**
  * @author gaoxin.wei
  */
-public class ClassHelper {
+public class ClassHolder implements Initialize {
 
     /** 包下所有的类 **/
-    private static final Set<Class<?>> CLASS_SET;
+    private Set<Class<?>> CLASS_SET;
 
-    static {
+    private ClassHolder() {}
+
+    public static ClassHolder INSTANCE = new ClassHolder();
+
+    @Override
+    public void init() {
         String appBasePackage = ConfigHelper.getAppBasePackage();
         CLASS_SET = ClassUtil.getClassSet(appBasePackage);
     }
@@ -25,7 +31,7 @@ public class ClassHelper {
      * 获取包下所有的类
      * @return
      */
-    public static Set<Class<?>> getClassSet() {
+    public Set<Class<?>> getClassSet() {
         return CLASS_SET;
     }
 
@@ -33,7 +39,7 @@ public class ClassHelper {
      * 获取所有的Service
      * @return
      */
-    public static Set<Class<?>> getServiceClassSet() {
+    public Set<Class<?>> getServiceClassSet() {
         Set<Class<?>> classSet = new HashSet<Class<?>>();
         for (Class<?> cls : CLASS_SET) {
             if (cls.isAnnotationPresent(Service.class)) {
@@ -47,7 +53,7 @@ public class ClassHelper {
      * 获取所有的Controller
      * @return
      */
-    public static Set<Class<?>> getControllerClassSet() {
+    public Set<Class<?>> getControllerClassSet() {
         Set<Class<?>> classSet = new HashSet<Class<?>>();
         for (Class<?> cls : CLASS_SET) {
             if (cls.isAnnotationPresent(Controller.class)) {
@@ -61,14 +67,14 @@ public class ClassHelper {
      * 获取所有的Bean
      * @return
      */
-    public static Set<Class<?>> getBeanClassSet() {
+    public Set<Class<?>> getBeanClassSet() {
         Set<Class<?>> classSet = new HashSet<Class<?>>();
         classSet.addAll(getServiceClassSet());
         classSet.addAll(getControllerClassSet());
         return classSet;
     }
 
-    public static Set<Class<?>> getClassSetByAnnotation(Class<? extends Annotation> annotation) {
+    public Set<Class<?>> getClassSetByAnnotation(Class<? extends Annotation> annotation) {
         Set<Class<?>> result = new HashSet<Class<?>>();
         for (Class<?> aClass : CLASS_SET) {
             if (aClass.isAnnotationPresent(annotation)) {
@@ -78,7 +84,7 @@ public class ClassHelper {
         return result;
     }
 
-    public static Set<Class<?>> getClassSetBySuper(Class<?> superClass) {
+    public Set<Class<?>> getClassSetBySuper(Class<?> superClass) {
         Set<Class<?>> result = new HashSet<Class<?>>();
         for (Class<?> aClass : CLASS_SET) {
             if (superClass.isAssignableFrom(aClass) && !superClass.equals(aClass)) {
@@ -87,4 +93,6 @@ public class ClassHelper {
         }
         return result;
     }
+
+
 }

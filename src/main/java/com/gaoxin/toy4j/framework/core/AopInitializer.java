@@ -1,4 +1,4 @@
-package com.gaoxin.toy4j.framework.helper;
+package com.gaoxin.toy4j.framework.core;
 
 import com.gaoxin.toy4j.framework.annotation.Aspect;
 import com.gaoxin.toy4j.framework.annotation.Service;
@@ -15,14 +15,20 @@ import java.util.*;
 /**
  * @author gaoxin.wei
  */
-public class AopHelper {
+public class AopInitializer implements Initialize {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AopHelper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AopInitializer.class);
 
-    static {
+    private AopInitializer() {}
+
+    public static AopInitializer INSTANCE = new AopInitializer();
+
+    @Override
+    public void init() {
         try {
             // 1. 获取所有带有Aspect的类
             Map<Class<?>, Set<Class<?>>> proxyMap = createProxyMap();
+
             // 2. 获取Aspect注解中的注解，并获取所有带此注解（目标类）的类 Map<Class<?>, Class>
             Map<Class<?>, List<Proxy>> targetMap = createTargetMap(proxyMap);
 
@@ -31,15 +37,16 @@ public class AopHelper {
                 Class<?> targetClass = targetEntry.getKey();
                 List<Proxy> proxyList = targetEntry.getValue();
                 Object proxy = ProxyManager.createProxy(targetClass, proxyList);
-                BeanHelper.setBean(targetClass, proxy);
+                BeanHolder.INSTANCE.setBean(targetClass, proxy);
             }
         } catch (Exception e) {
             LOGGER.error("aop helper load error", e);
             throw new RuntimeException(e);
         }
+
     }
 
-    private static Map<Class<?>, List<Proxy>> createTargetMap(Map<Class<?>, Set<Class<?>>> proxyMap) throws Exception {
+    private Map<Class<?>, List<Proxy>> createTargetMap(Map<Class<?>, Set<Class<?>>> proxyMap) throws Exception {
         Map<Class<?>, List<Proxy>> result = new HashMap<Class<?>, List<Proxy>>();
         for (Map.Entry<Class<?>, Set<Class<?>>> classSetEntry : proxyMap.entrySet()) {
             Class<?> proxyClass = classSetEntry.getKey();
@@ -56,20 +63,20 @@ public class AopHelper {
         return result;
     }
 
-    private static Map<Class<?>, Set<Class<?>>> createProxyMap() {
+    private Map<Class<?>, Set<Class<?>>> createProxyMap() {
         Map<Class<?>, Set<Class<?>>> result = new HashMap<Class<?>, Set<Class<?>>>();
         addAspectClassSet(result);
         addTransactionClassSet(result);
         return result;
     }
 
-    private static void addTransactionClassSet(Map<Class<?>, Set<Class<?>>> proxyMap) {
-        Set<Class<?>> proxySet = ClassHelper.getClassSetByAnnotation(Service.class);
+    private void addTransactionClassSet(Map<Class<?>, Set<Class<?>>> proxyMap) {
+        Set<Class<?>> proxySet = ClassHolder.INSTANCE.getClassSetByAnnotation(Service.class);
         proxyMap.put(TransactionProxy.class, proxySet);
     }
 
-    private static void addAspectClassSet(Map<Class<?>, Set<Class<?>>> proxyMap) {
-        Set<Class<?>> proxySet = ClassHelper.getClassSetBySuper(AspectProxy.class);
+    private void addAspectClassSet(Map<Class<?>, Set<Class<?>>> proxyMap) {
+        Set<Class<?>> proxySet = ClassHolder.INSTANCE.getClassSetBySuper(AspectProxy.class);
 
         for (Class<?> aClass : proxySet) {
             if (aClass.isAnnotationPresent(Aspect.class)) {
@@ -77,11 +84,10 @@ public class AopHelper {
                 Class<? extends Annotation> annotation = aspect.value();
                 Set<Class<?>> targetSet = new HashSet<Class<?>>();
                 if (annotation != null && !annotation.equals(Aspect.class)) {
-                    targetSet = ClassHelper.getClassSetByAnnotation(annotation);
+                    targetSet = ClassHolder.INSTANCE.getClassSetByAnnotation(annotation);
                 }
                 proxyMap.put(aClass, targetSet);
             }
         }
     }
-
 }
