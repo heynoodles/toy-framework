@@ -13,6 +13,7 @@ public class BootstrapLoader {
             ClassHolder.INSTANCE,
             BeanHolder.INSTANCE,
             AopInitializer.INSTANCE,
+            RepositoryInitializer.INSTANCE,
             IocInitializer.INSTANCE,
             ControllerHolder.INSTANCE
         };

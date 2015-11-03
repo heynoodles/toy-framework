@@ -1,6 +1,7 @@
 package com.gaoxin.toy4j.framework.core;
 
 import com.gaoxin.toy4j.framework.annotation.Controller;
+import com.gaoxin.toy4j.framework.annotation.Repository;
 import com.gaoxin.toy4j.framework.annotation.Service;
 import com.gaoxin.toy4j.framework.helper.ConfigHelper;
 import com.gaoxin.toy4j.framework.utils.ClassUtil;
@@ -45,6 +46,20 @@ public class ClassHolder implements Initialize {
             if (cls.isAnnotationPresent(Service.class)) {
                 classSet.add(cls);
             }
+        }
+        return classSet;
+    }
+
+    /**
+     * 获取所有的Repository
+     * @return
+     */
+    public Set<Class<?>> getRepositoryClassSet() {
+        Set<Class<?>> classSet = new HashSet<Class<?>>();
+        for (Class<?> cls : CLASS_SET) {
+           if (cls.isAnnotationPresent(Repository.class)) {
+               classSet.add(cls);
+           }
         }
         return classSet;
     }
