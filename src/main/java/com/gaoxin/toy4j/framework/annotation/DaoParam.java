@@ -8,8 +8,9 @@ import java.lang.annotation.Target;
 /**
  * @author gaoxin.wei
  */
-@Target(ElementType.TYPE)
+@Target(value = { ElementType.PARAMETER, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Repository {
+public @interface DaoParam {
 
+    String value() default "";
 }

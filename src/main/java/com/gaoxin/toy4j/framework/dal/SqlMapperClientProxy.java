@@ -15,7 +15,7 @@ public class SqlMapperClientProxy {
         return (T)Enhancer.create(targetClass, new MethodInterceptor() {
             @Override
             public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
-                return SqlMapperClient.INSTANCE.execute();
+                return SqlMapperClient.INSTANCE.execute(o, method, objects, methodProxy);
             }
         });
     }
